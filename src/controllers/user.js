@@ -26,10 +26,10 @@ const changePassword = async (req, res) => {
         currentPassword: req.body.currentPassword,
         newPassword: req.body.newPassword,
     }
-    console.log(req)
+
     try {
 
-        const data = await Password.findOneAndUpdate(values);
+        const data = await Password.create(values);
         if (data) {
             res.json({ msg: "Password sucessfully changed" })
         }
