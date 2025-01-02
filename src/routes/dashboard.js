@@ -6,7 +6,14 @@ const {
 
 } = require('../controllers/dashboard');
 
-router.post('/dashboard-analytics', uploadDashboardAnalytics);
+const { upload } = require('../middlewares/imageUpload');
+
+router.post('/dashboard-analytics',
+    upload.fields([
+        { name: 'principalImage', maxCount: 1 },
+        { name: 'vicePrincipalImage', maxCount: 1 },
+        { name: 'schoolLogo', maxCount: 1 },
+    ]), uploadDashboardAnalytics);
 router.get('/dashboard-analytics', getDashboardAnalytics);
 
 

@@ -31,10 +31,20 @@ const changePassword = async (req, res) => {
 
         const data = await Password.create(values);
         if (data) {
-            res.json({ msg: "Password sucessfully changed" })
+            res.json({
+                msg: {
+                    message: "Password sucessfully changed",
+                    level: 'Success'
+                }
+            })
         }
         else {
-            res.json({ msg: "Couldn't change the  password.please try adding again" })
+            res.json({
+                msg: {
+                    message: "Couldn't change the  password.please try adding again",
+                    level: 'Error'
+                }
+            })
         }
     }
     catch (err) {

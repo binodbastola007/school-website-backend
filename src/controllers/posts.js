@@ -10,7 +10,13 @@ const allPosts = async (req, res) => {
         res.json({ data, totalCount });
     }
     else {
-        res.json({ msg: "No posts found." });
+        res.json({
+            msg: {
+                message: "No posts found.",
+                level: 'Success'
+            },
+            results: data,
+        });
     }
 }
 
@@ -65,23 +71,44 @@ const deletePost = async (req, res) => {
 }
 
 const editPost = async (req, res) => {
+
     try {
         const id = req.params.id;
-      
-        const { path, filename } = req.file;
-        const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${filename}`;
+        let updatedData = undefined;
 
-        const updateData = {
-            postContent: req.body.postContent,
-            postImageUrl: fileUrl,
-        };
+        if (req.file) {
+            const { path, filename } = req.file;
+            const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${filename}`;
+
+            updatedData = {
+                postContent: req.body.postContent,
+                postImageUrl: fileUrl,
+            };
+        }
+        else {
+            updatedData = {
+                postContent: req.body.postContent,
+                postImageUrl: req.body.postImageUrl,
+            };
+        }
+
         const options = { new: true };
         const data = await Post.findByIdAndUpdate(id, updatedData, options);
         if (data) {
-            res.json({ msg: "Succesfully updated the post" });
+            res.json({
+                msg: {
+                    message: "Succesfully updated the post",
+                    level: 'Success'
+                }
+            });
         }
         else {
-            res.json({ msg: "Couln't update the post" })
+            res.json({
+                msg: {
+                    message: "Couln't update the post",
+                    level: 'Error'
+                }
+            })
         }
     }
     catch (err) {
@@ -97,11 +124,21 @@ const postDetails = async (req, res) => {
             res.json({ data });
         }
         else {
-            res.json({ msg: "Couln't find the post details" })
+            res.json({
+                msg: {
+                    message: "Couln't find the post details",
+                    level: 'Error'
+                }
+            })
         }
     }
     catch (err) {
-        res.json({ msg: "Invalid post id" })
+        res.json({
+            msg: {
+                message: "Invalid post id",
+                level: 'Error'
+            }
+        })
     }
 
 }

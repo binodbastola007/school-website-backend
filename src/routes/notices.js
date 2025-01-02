@@ -2,11 +2,15 @@ const express = require('express');
 const router = express.Router();
 const {
     uploadNotice,
-    getNotices
+    getNotices,
+    deleteNotice,
+    editNotice,
 } = require('../controllers/notices');
 
-router.post('/notice-upload', uploadNotice);
+router.post('/notices', uploadNotice);
 router.get('/notices', getNotices);
+router.patch('/notices/:id', editNotice);
+router.delete('/notices/:id', deleteNotice);
 
 
 module.exports = router;
