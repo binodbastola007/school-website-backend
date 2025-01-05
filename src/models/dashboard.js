@@ -11,7 +11,7 @@ const dashboardSchema = new Schema({
     ourVision : {type:String , required:true},
     ourMission: {type:String , required:true},
     schoolEmail : [{type:String,required:true}],
-    schoolContactNumber : [{type:Number,required:true}],
+  schoolContactNumber: [{ type: String, required: true }],
     schoolLocation : [{type:String,required:true}],
     facebookLink : [{type:String,required:true}],
     schoolLogoImageUrl : [{type:String,required:true}],

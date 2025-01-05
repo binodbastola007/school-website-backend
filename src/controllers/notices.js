@@ -4,7 +4,7 @@ const getNotices = async (req, res) => {
     const data = await Notices.find();
 
     if (data.length > 0) {
-        res.json({ data });
+        res.json({ results: data });
     }
     else {
         res.json({

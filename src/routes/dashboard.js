@@ -8,7 +8,7 @@ const {
 
 const { upload } = require('../middlewares/imageUpload');
 
-router.post('/dashboard-analytics',
+router.patch('/dashboard-analytics',
     upload.fields([
         { name: 'principalImage', maxCount: 1 },
         { name: 'vicePrincipalImage', maxCount: 1 },

@@ -18,47 +18,59 @@ const getDashboardAnalytics = async (req, res) => {
 
 
 const uploadDashboardAnalytics = async (req, res) => {
-
-    const principalImageFile = req.files?.principalImage?.[0]?.filename || null;
-    const vicePrincipalImageFile = req.files?.vicePrincipalImage?.[0]?.filename || null;
-    const schoolLogoFile = req.files?.schoolLogoImage?.[0]?.filename || null;
-
-    const PI_FILEURL = `${req.protocol}://${req.get('host')}/uploads/${principalImageFile}`;
-    const VI_FILEURL = `${req.protocol}://${req.get('host')}/uploads/${vicePrincipalImageFile}`;
-    const SL_FILEURL = `${req.protocol}://${req.get('host')}/uploads/${schoolLogoFile}`;
-
     try {
-        const values = {
-            principalImageUrl: PI_FILEURL,
-            vicePrincipalImageUrl: VI_FILEURL,
-            teacherCount: req.body.teacherCount,
-            studentCount: req.body.studentCount,
-            messageFromPrincipal: req.body.messagePrincipal,
-            messageFromVicePrincipal: req.body.messageFromVicePrincipal,
-            ourVision: req.body.ourVision,
-            ourMission: req.body.ourMission,
-            schoolEmail: req.body.schoolEmail,
-            schoolContactNumber: req.body.schoolContactNumber,
-            schoolLocation: req.body.schoolLocation,
-            facebookLink: req.body.facebookLink,
-            schoolLogoImageUrl: SL_FILEURL,
+
+        const principalImageFile = req.files?.principalImage?.[0]?.filename || null;
+        const vicePrincipalImageFile = req.files?.vicePrincipalImage?.[0]?.filename || null;
+        const schoolLogoFile = req.files?.schoolLogo?.[0]?.filename || null;
+
+        const PI_FILEURL = principalImageFile
+            ? `${req.protocol}://${req.get('host')}/uploads/${principalImageFile}`
+            : null;
+        const VI_FILEURL = vicePrincipalImageFile
+            ? `${req.protocol}://${req.get('host')}/uploads/${vicePrincipalImageFile}`
+            : null;
+        const SL_FILEURL = schoolLogoFile
+            ? `${req.protocol}://${req.get('host')}/uploads/${schoolLogoFile}`
+            : null;
+
+
+        const updateValues = {
+            ...(PI_FILEURL && { principalImageUrl: PI_FILEURL }),
+            ...(VI_FILEURL && { vicePrincipalImageUrl: VI_FILEURL }),
+            ...(SL_FILEURL && { schoolLogoImageUrl: SL_FILEURL }),
+            ...(req.body.teacherCount && { teacherCount: req.body.teacherCount }),
+            ...(req.body.studentCount && { studentCount: req.body.studentCount }),
+            ...(req.body.messagePrincipal && { messageFromPrincipal: req.body.messagePrincipal }),
+            ...(req.body.messageVicePrincipal && { messageFromVicePrincipal: req.body.messageVicePrincipal }),
+            ...(req.body.ourVision && { ourVision: req.body.ourVision }),
+            ...(req.body.ourMission && { ourMission: req.body.ourMission }),
+            ...(req.body.schoolEmail && { schoolEmail: req.body.schoolEmail }),
+            ...(req.body.schoolContactNumber && { schoolContactNumber: req.body.schoolContactNumber }),
+            ...(req.body.schoolLocation && { schoolLocation: req.body.schoolLocation }),
+            ...(req.body.facebookLink && { facebookLink: req.body.facebookLink }),
         };
-        const data = await Dashboard.create(values);
 
+        const data = await Dashboard.findOneAndUpdate(
+            {},
+            { $set: updateValues },
+            { upsert: true, new: true }
+        );
 
-        return res.status(201).json({
+        return res.status(200).json({
             msg: {
-                message: "Saved successfully",
-                level: 'Success'
+                message: "Dashboard data updated successfully",
+                level: "Success",
             },
             results: data,
         });
     } catch (err) {
+        console.error("Error updating dashboard analytics:", err);
 
         return res.status(500).json({
             msg: {
-                message: "An error occurred while saving the data. Please try again.",
-                level: 'Error'
+                message: "An error occurred while updating the data. Please try again.",
+                level: "Error",
             },
             error: err.message,
         });
