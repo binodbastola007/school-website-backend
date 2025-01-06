@@ -8,8 +8,8 @@ const {
 
 
 router.post('/student/register', registerStudent);
-router.get('/registration-forms', allRegistrationForms);
-router.patch('/registration-forms/:id', approveRegistrationForm);
+router.get('/registration-requests', allRegistrationForms);
+router.patch('/registration-requests/:id', approveRegistrationForm);
 
 
 module.exports = router;

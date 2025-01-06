@@ -1,13 +1,12 @@
 const RegistrationForm = require('../models/registrationForm');
 
 const allRegistrationForms = async (req, res) => {
-    const skipCount = (req.query.page - 1) * 12;
-    const data = await RegistrationForm.find().limit(12).skip(skipCount);
+    const data = await RegistrationForm.find();
     const totalCount = await RegistrationForm.find().countDocuments();
 
 
     if (data.length > 0) {
-        res.json({ data, totalCount });
+        res.json({ results: data, totalCount });
     }
     else {
         res.json({ msg: "No Registration form found." });
@@ -61,10 +60,10 @@ const approveRegistrationForm = async (req, res) => {
         const id = req.params.id;
 
         const value = {
-            isApproved: req.body.isApproved,
+            isApproved: true,
         };
-        const options = { new: true };
-        const data = await Post.findByIdAndUpdate(id, value);
+
+        const data = await RegistrationForm.findByIdAndUpdate(id, value);
         if (data) {
             res.json({
                 msg: {
