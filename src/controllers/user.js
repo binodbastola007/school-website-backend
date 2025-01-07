@@ -1,4 +1,4 @@
-const { User } = require('../models/user');
+const { User, Permission } = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const saltRounds = 10;
@@ -20,6 +20,47 @@ const registerUser = async (req, res) => {
         } else {
             res.json({ msg: "Couldn't register the user. Please try registering again." });
         }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ msg: "Server error. Please try again." });
+    }
+};
+const addRole = async (req, res) => {
+    try {
+        const data = await Permission.create(req.body);
+        if (data) {
+            res.json({
+                msg:
+                {
+                    message: "Added permission for the role  successfully"
+                }
+            });
+        } else {
+            res.json({
+                msg: {
+                    message: "Couldn't register the permissions. Please try again."
+                }
+            });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ msg: "Server error. Please try again." });
+    }
+};
+const fetchMe = async (req, res) => {
+    const { email } = req.user;
+
+    try {
+        const permission = await Permission.findOne({ email });
+        if (!permission) {
+            res.json({
+                msg: {
+                    message: 'Permission not found',
+                    level: 'Error'
+                }
+            })
+        }
+        return res.json({ results: permission });
     } catch (err) {
         console.error(err);
         res.status(500).json({ msg: "Server error. Please try again." });
@@ -139,4 +180,4 @@ const changePassword = async (req, res) => {
     }
 };
 
-module.exports = { registerUser, loginUser, changePassword, logoutUser };
+module.exports = { registerUser, loginUser, changePassword, logoutUser, fetchMe, addRole };
