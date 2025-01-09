@@ -7,7 +7,7 @@ const allPosts = async (req, res) => {
 
 
     if (data.length > 0) {
-        res.json({ data, totalCount });
+        res.json({ results: data, totalCount });
     }
     else {
         res.json({
@@ -32,6 +32,7 @@ const uploadPost = async (req, res) => {
         const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${filename}`;
 
         const post = {
+            postTitle: req.body.postTitle,
             postContent: req.body.postContent,
             postImageUrl: fileUrl,
         };
@@ -81,12 +82,14 @@ const editPost = async (req, res) => {
             const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${filename}`;
 
             updatedData = {
+                postTitle: req.body.postTitle,
                 postContent: req.body.postContent,
                 postImageUrl: fileUrl,
             };
         }
         else {
             updatedData = {
+                postTitle: req.body.postTitle,
                 postContent: req.body.postContent,
                 postImageUrl: req.body.postImageUrl,
             };
@@ -121,7 +124,9 @@ const postDetails = async (req, res) => {
     try {
         const data = await Post.findById(req.params.id);
         if (data) {
-            res.json({ data });
+            res.json({
+                results: data
+            });
         }
         else {
             res.json({
